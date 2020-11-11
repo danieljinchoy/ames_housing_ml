@@ -1,0 +1,94 @@
+---
+title: "ML Project"
+subtitle: "Complementary Code"
+author: "Daniel Choy, Yi Cao, Danny Zeng"
+date: "Nov 10, 2020"
+output:
+  html_notebook:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+Machine Learning Project - Ames Housing Data
+
+Ames, Iowa is the college town of **Iowa State University**. The Ames housing dataset consists of about $2500$ house sale records between $2006-2010$. Detailed information about the house attributes, along with the sale prices, is recorded in the dataset. The goal of the project is to:
+- perform descriptive data analysis to gain business (i.e. housing market) insights
+- build descriptive machine learning models to understand the local housing market.
+- build predictive machine learning models for the local house price prediction.
+
+
+### Who We Are
+
+Choose (but are not limited to) one of the following options:
+- You are a housing market consultant.
+- You are a data scientist for an online real estate database company which provides house price estimation (like **Zillow** home price estimates) for the site visitors.
+
+The goal is to build a highly accurate predictive or descriptive model. To accomplish this, it is important to understand the local housing market in a **data driven** way. 
+
+### Import Libraries
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+library(tidyverse)
+
+```
+
+### Load Data
+
+There are two data sets included in the data folder: Ames_Housing_Price_Data.csv and Ames_Real_Estate_Data.csv.
+
+The Ames_Housing_Price_Data.csv set contains  81  data columns, including the key feature SalePrice which will be used as the target of the predictive/descriptive modeling. PID refers to the land parcel ID, which can merged on the MapRefNo column of the Ames Accessor Data (Ames_Real_Estate_Data.csv) to find the property address. Using a free service, such as geopy, we can find the long-lat coordinates of the houses.
+
+The columns of the data are mostly attributes associated with the land and the houses. There are size related attributes, quality and condition attributes, house attachment attributes, etc.
+
+```{r}
+housing = read.csv('Ames_HousePrice.csv', header = TRUE)
+real_estate = read.csv('data/Ames_Real_Estate_Data.csv')
+```
+
+```{r}
+head(housing)
+head(real_estate)
+```
+
+## Data Pre-Processing
+
+### Data Inspection
+```{r}
+
+```
+
+### Dealing with Missing Data
+
+
+### Mutating Columns
+
+
+### Data Type
+
+
+
+## Exploratory Data Analysis
+
+
+
+## Descriptive Modeling
+
+
+
+
+## Predictive Modeling
+
+
+
+
+
+
+
