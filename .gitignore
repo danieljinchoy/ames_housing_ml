@@ -1,3 +1,5 @@
 *.csv
-
 .Rproj.user
+.Rhistory
+.ipynb.checkpoints
+.DS_Store
