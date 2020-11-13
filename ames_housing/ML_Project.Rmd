@@ -37,7 +37,6 @@ library(dplyr)
 library(ggplot2)
 library(lubridate)
 library(tidyverse)
-
 ```
 
 ### Load Data
@@ -60,16 +59,72 @@ real_estate = read.csv('data/Ames_Real_Estate_Data.csv')
 
 ### Data Inspection
 ```{r}
-
+str(housing)
 ```
 
-### Data Selection
+### Data Cleaning
+
+#### NA values - Dealing with Missing Data
+```{r}
+library(tidyverse)
+# Remove NA values in MasVnrArea
+housing1 = housing %>% 
+  filter(is.na(MasVnrArea) != 1)
+```
+
+```{r}
+# Remove NA values in TotalBsmtSF
+housing2 = housing1 %>% 
+  filter(is.na(TotalBsmtSF) != 1)
+```
 
 
-### Dealing with Missing Data
+
+#### Mutate Columns
+```{r}
+library(car)
+
+# Create new columns for better modeling 
+housing3 = housing2 %>% 
+  filter(is.na(MasVnrArea) != 1) %>% 
+  mutate(
+    
+    MasVnrArea2 = case_when(
+      MasVnrArea == 0 ~ 0,
+      MasVnrArea != 0 ~ 1),
+    
+    GarageArea2 = ifelse(is.na(GarageArea), 0, GarageArea),
+    
+    PoolArea2 = ifelse(is.na(PoolArea), 0, PoolArea),
+    
+    PoolArea3 = ifelse(is.na(PoolArea), 0, 1),
+    
+    X2ndFlrSF = ifelse(is.na(X2ndFlrSF), 0, X2ndFlrSF),
+    
+    HalfBath2 = case_when(
+      HalfBath == 1 ~ 0.5,
+      HalfBath == 0 ~ 0),
+    
+    BsmtHalfBath2 = case_when(
+      BsmtHalfBath == 1 ~ 0.5,
+      BsmtHalfBath == 0 ~ 0),
+    # If Basement Finish Type1 is GLQ or ALQ, we use the Basement Finish Square Feet1
+    BasmtFinSF1 = ifelse(BsmtFinType1 == 'GLQ' | BsmtFinType1 == 'ALQ', BsmtFinSF1, 0),
+    # If Basement Finish Type2 is GLQ or ALQ, we use the Basement Finish Square Feet2
+    BasmtFinSF2 = ifelse(BsmtFinType2 == 'GLQ' | BsmtFinType2 =='ALQ', BsmtFinSF2, 0),
+    # The Total Square Feet of Basement Finish is BasmtFinSF1 + BasmtFinSF2
+    BasmtFinSF = BasmtFinSF1 + BasmtFinSF2,
+    # Total Living Area is GrLivArea + BasmtFinSF
+    total_LivArea = GrLivArea + BasmtFinSF,
+    num_bathroom = BsmtHalfBath2 + HalfBath2 + FullBath + BsmtFullBath
+  )
+
+# Final Data set after cleaning
+
+housing_df = housing3
+```
 
 
-### Mutating Columns
 
 
 ### Data Type
@@ -77,220 +132,170 @@ real_estate = read.csv('data/Ames_Real_Estate_Data.csv')
 
 
 ## Exploratory Data Analysis
+
+
+
+
+
+
+
+
+
+
+
+
+## Model Selection
+
+
+### Model 1: Base Model
 ```{r}
-housing.model = lm(SalePrice ~ ., data = housing)
+# Basic model - starting line
+housing.model = lm(log(SalePrice) ~ log(GrLivArea) + LotArea + MasVnrArea, data = housing_df)
 summary(housing.model)
-
-
+plot(housing.model)
 ```
-```{r}
-housing.model2 = lm(SalePrice ~ GrLivArea + LotArea + Neighborhood + Condition1 + Condition2 + OverallQual + OverallCond + YearBuilt + RoofMatl + MasVnrType + MasVnrArea + ExterQual + BsmtFinSF2 + BsmtUnfSF + BedroomAbvGr + KitchenQual + Fireplaces + FireplaceQu, data = housing)
 
+### Model 2
+Independent Variables: log(GrLivArea), log(LotArea), MasVnrArea2
+```{r}
+housing.model2 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2, data = housing_df)
 summary(housing.model2)
-```
-```{r}
 plot(housing.model2)
+vif(housing.model2)
 ```
 
 
+### Model 3
+Independent Variables: log(GrLivArea), log(LotArea), MasVnrArea2, log(TotalBsmtSF + 1)
 ```{r}
-housing.model3 = lm(log(SalePrice) ~ log(GrLivArea, na.rm) + log(LotArea) + Neighborhood + Condition1 + Condition2 + OverallQual + OverallCond + YearBuilt + RoofMatl + MasVnrType + log(MasVnrArea) + ExterQual + BsmtFinSF2 + BsmtUnfSF + BedroomAbvGr + KitchenQual + Fireplaces + FireplaceQu, data = housing)
-
+housing.model3 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1), data = housing_df)
 summary(housing.model3)
 plot(housing.model3)
+vif(housing.model3)
 ```
 
-```{r}
 
-# Basic model - starting line
-housing.model4 = lm(log(SalePrice) ~ log(GrLivArea) + LotArea + MasVnrArea, data = housing)
+### Model 4
+Independent Variables: log(GrLivArea), log(LotArea), MasVnrArea2, log(TotalBsmtSF + 1), log(GarageArea2 + 1)
+```{r}
+housing.model4 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1),  data = housing_df)
 summary(housing.model4)
+vif(housing.model4)
 plot(housing.model4)
-
-
 ```
+
+
+
+### Model 5
+Independent Variables: log(GrLivArea), log(LotArea), MasVnrArea2, log(TotalBsmtSF + 1), log(GarageArea2 + 1), log(PoolArea + 1)
 ```{r}
-# How to deal with the missing value?
-# Do we need to log the area values?
-
-
-summary(housing)
-
-
-housing %>% 
-  select(SalePrice, GrLivArea, LotArea, MasVnrArea, YearBuilt) %>% 
-  filter(is.na(MasVnrArea))
-```
-```{r}
-library(car)
-housing2 = housing %>% 
-  filter(is.na(MasVnrArea) != 1) %>% 
-  mutate(MasVnrArea2 = case_when(
-    MasVnrArea == 0 ~ 0,
-    MasVnrArea != 0 ~ 1,
-  ))
-
-housing.model5 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2, data = housing2)
+housing.model5 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + log(PoolArea + 1),  data = housing_df)
 summary(housing.model5)
-plot(housing.model5)
 vif(housing.model5)
+plot(housing.model5)
 ```
 
+
+### Model 6
+Independent Variables: log(GrLivArea), log(LotArea), MasVnrArea2, log(TotalBsmtSF + 1), log(GarageArea2 + 1), PoolArea
 ```{r}
-# Filter out 0 values out
-# log(x +1)
-# ??
-
-housing3 = housing2 %>% 
-  filter(is.na(TotalBsmtSF) != 1)
-
-housing.model6 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1), data = housing3)
-
+housing.model6 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + PoolArea,  data = housing_df)
 summary(housing.model6)
-plot(housing.model6)
-
 vif(housing.model6)
+plot(housing.model6)
 ```
 
 ```{r}
-summary(housing3)
-housing4 = housing3 %>% 
-  mutate(GarageArea2 = ifelse(is.na(GarageArea), 0, GarageArea))
-
-housing.model7 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1),  data = housing4)
-summary(housing.model7)
-vif(housing.model7)
-plot(housing.model7)
-```
-
-
-```{r}
-housing5 = housing4 %>% 
-  mutate(PoolArea2 = ifelse(is.na(PoolArea), 0, PoolArea))
-
-housing.model8 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + log(PoolArea + 1),  data = housing5)
-summary(housing.model8)
-vif(housing.model8)
-plot(housing.model8)
-```
-```{r}
-housing6 = housing4 %>% 
-  mutate(PoolArea2 = ifelse(is.na(PoolArea), 0, 1))
-
-housing.model9 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + PoolArea,  data = housing6)
-summary(housing.model9)
-vif(housing.model9)
-plot(housing.model)
-
+# Check linear regression between SalePrice and PoolArea
 pool.model = lm(SalePrice ~ PoolArea, data = housing)
 summary(pool.model)
-
-
 # Get rid of PoolArea
 ```
+
 ```{r}
-# Year Variables
+# Check linear regression between SalePrice and YearBuilt, YearRemodAdd
 year.model = lm(SalePrice ~ YearBuilt + YearRemodAdd, data = housing4)
 summary(year.model)
 vif(year.model)
-
 summary(housing4)
-
 # Year Built and Year Remodeled are significant variables to add
 ```
 
+
+### Model 7
+Independent Variables: log(GrLivArea), log(LotArea), MasVnrArea2, log(TotalBsmtSF + 1), log(GarageArea2 + 1), YearBuilt, YearRemodAdd
 ```{r}
-housing.model10 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd,  data = housing4)
+housing.model7 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd,  data = housing_df)
 
-summary(housing.model10)
-plot(housing.model10)
+summary(housing.model7)
+plot(housing.model7)
+```
 
-anova(housing.model10, housing.model7, test = 'Chisq')
-
+```{r}
+anova(housing.model7, housing.model6, test = 'Chisq')
 ```
 We reject the null hypothesis and conclude that adding more features in the model should provide a better fit. In other words, the full model is better than the reduced model.
 
 
+### *Checking Models
 ```{r}
-sold.model = lm(SalePrice ~ MoSold + YrSold, data = housing4)
+# Check linear regression between SalePrice and MoSold, YrSold
+sold.model = lm(SalePrice ~ MoSold + YrSold, data = housing_df)
 summary(sold.model)
 plot(sold.model)
 # Month and Year sold - irrelevant
 ```
+
 ```{r}
-quality.model = lm(SalePrice ~ OverallQual + OverallCond, housing4)
+# Check linear regression between SalePrice and OverallQual, OverallCond
+quality.model = lm(SalePrice ~ OverallQual + OverallCond, housing_df)
 summary(quality.model)
 plot(quality.model)
 ```
+
+
+
+### Model 8
+Independent Variables: log(GrLivArea), log(LotArea), MasVnrArea2, log(TotalBsmtSF + 1), log(GarageArea2 + 1), YearBuilt, YearRemodAdd, OverallQual, OverallCond
 ```{r}
-housing.model11 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual + OverallCond,  data = housing4)
-summary(housing.model11)
-plot(housing.model11)
+housing.model8 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual + OverallCond,  data = housing_df)
+summary(housing.model8)
+plot(housing.model8)
+```
 
-anova(housing.model11, housing.model10, test = 'Chisq')
-
+```{r}
+anova(housing.model8, housing.model7, test = 'Chisq')
 # Multiple R-Squared too lage?
 ```
 
+
+
+### Model 9
+Independent Variables: log(GrLivArea), log(LotArea), MasVnrArea2, log(TotalBsmtSF + 1), log(GarageArea2 + 1), YearBuilt, YearRemodAdd, OverallQual, OverallCond, og(X1stFlrSF), log(X2ndFlrSF + 1)
 ```{r}
-housing6 = housing4 %>% 
-  mutate(X2ndFlrSF = ifelse(is.na(X2ndFlrSF), 0, X2ndFlrSF))
+housing.model9 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual + log(X1stFlrSF) + log(X2ndFlrSF + 1),  data = housing_df)
+summary(housing.model9)
+plot(housing.model9)
+```
 
-
-housing.model12 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual + log(X1stFlrSF) + log(X2ndFlrSF + 1),  data = housing6)
-
-
-
-summary(housing.model12)
-plot(housing.model12)
-
+```{r}
 anova(housing.model12, housing.model11, test = 'Chisq')
-
 vif(housing.model12)
-
 # Multicolinearity - Remove 1stFlrSF and 2ndFlrSF
 ```
-```{r}
 
 
-new.model = lm(SalePrice ~ GrLivArea + TotRmsAbvGrd, data = housing4)
-summary(new.model)
-plot(new.model)
-vif(new.model)
-```
+### Model 10 - 11
 
 1. Model with Total Number of Rooms (Including the Basement) 
 ```{r}
-housing5 = housing4 %>% 
-  mutate(HalfBath2 = case_when(
-    HalfBath == 1 ~ 0.5,
-    HalfBath == 0 ~ 0
-  )) %>% 
-  mutate(BsmtHalfBath2 = case_when(
-    BsmtHalfBath == 1 ~ 0.5,
-    BsmtHalfBath == 0 ~ 0
-  ))
-
-
-housing6 = housing5 %>% 
-  mutate(total_room = TotRmsAbvGrd + BsmtHalfBath2 + HalfBath2 + FullBath + BsmtFullBath)
-
-
-# Do we include Average Rec Room (Rec) as livable area
-housing7 = housing6 %>% 
-  mutate(BasmtFinSF1 = ifelse(BsmtFinType1 == 'GLQ' | BsmtFinType1 == 'ALQ', BsmtFinSF1, 0)) %>% 
-  mutate(BasmtFinSF2 = ifelse(BsmtFinType2 == 'GLQ' | BsmtFinType2 =='ALQ', BsmtFinSF2, 0)) %>% 
-  mutate(BasmtFinSF = BasmtFinSF1 + BasmtFinSF2) %>% 
-  mutate(total_LivArea = GrLivArea + BasmtFinSF) %>% 
-  mutate(num_bathroom = BsmtHalfBath2 + HalfBath2 + FullBath + BsmtFullBath)
-
 # Model with GrLivArea
-housing.model13 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual, data = housing6)
-summary(housing.model13)
-vif(housing.model13)
+housing.model10 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual, data = housing_df)
+summary(housing.model10)
+vif(housing.model10)
 
 # Model with total_room
-housing.model14 = lm(log(SalePrice) ~ log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual + total_room, data = housing6)
+housing.model11 = lm(log(SalePrice) ~ log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual + total_room, data = housing_df)
 summary(housing.model14)
 vif(housing.model14)
 
@@ -299,9 +304,6 @@ vif(housing.model14)
 
 2. Model with Number of bathrooms (just the bathrooms, including the Basement & Full Bath & HalfBath) 
 ```{r}
-housing7 = housing5 %>% 
-  mutate(num_bathroom = BsmtHalfBath2 + HalfBath2 + FullBath + BsmtFullBath)
-  
 # Total_LivArea
 housing.model15 = lm(log(SalePrice) ~ log(total_LivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual, data = housing7)
 summary(housing.model15)
