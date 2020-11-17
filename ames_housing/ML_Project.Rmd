@@ -78,7 +78,9 @@ housing2 = housing1 %>%
   filter(is.na(TotalBsmtSF) != 1)
 ```
 
-
+```{r}
+housing2 %>%filter(is.na(MasVnrArea) != 1)
+```
 
 #### Mutate Columns
 ```{r}
@@ -122,6 +124,8 @@ housing3 = housing2 %>%
 # Final Data set after cleaning
 
 housing_df = housing3
+
+
 ```
 
 
@@ -133,16 +137,154 @@ housing_df = housing3
 
 ## Exploratory Data Analysis
 
+```{r}
+# MasVnrType
+housing_df %>% 
+  group_by(MasVnrType) %>% 
+  summarise(mean_MasVnrType = mean(SalePrice)) %>% 
+  ggplot(aes(x = MasVnrType, y = mean_MasVnrType)) +
+  geom_col()
+
+# Stone
+```
+```{r}
+# ExterCond
+housing_df %>% 
+  group_by(ExterCond) %>% 
+  summarise(mean_ExterCond = mean(SalePrice)) %>% 
+  ggplot(aes(x = ExterCond, y = mean_ExterCond)) +
+  geom_col()
+```
+```{r}
+# ExterQual
+housing_df %>% 
+  group_by(ExterQual) %>% 
+  summarise(mean_ExterQual = mean(SalePrice)) %>% 
+  ggplot(aes(x = ExterQual, y = mean_ExterQual)) +
+  geom_col()
+
+# Excellent
+```
+```{r}
+# Foundation
+housing_df %>% 
+  group_by(Foundation) %>% 
+  summarise(mean_Foundation = mean(SalePrice)) %>% 
+  ggplot(aes(x = Foundation, y = mean_Foundation)) +
+  geom_col()
+
+# Poured concrete
+```
+
+
+```{r}
+# BsmtQual
+housing_df %>% 
+  group_by(BsmtQual) %>% 
+  summarise(mean_BsmtQual = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtQual, y = mean_BsmtQual)) +
+  geom_col()
+
+```
+
+
+```{r}
+# BsmtCond
+housing_df %>% 
+  group_by(BsmtCond) %>% 
+  summarise(mean_BsmtCond = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtCond, y = mean_BsmtCond)) +
+  geom_col()
+
+# Excellent and good
+```
+
+
+```{r}
+# BsmtExposure
+housing_df %>% 
+  group_by(BsmtExposure) %>% 
+  summarise(mean_BsmtExposure = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtExposure, y = mean_BsmtExposure)) +
+  geom_col()
+
+# Good Exposure
+```
+
+
+```{r}
+# BsmtFinType1
+housing_df %>% 
+  group_by(BsmtFinType1) %>% 
+  summarise(mean_BsmtFinType1 = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtFinType1, y = mean_BsmtFinType1)) +
+  geom_col()
+
+# GLQ
+```
 
 
 
 
+```{r}
+# BsmtFinType2
+housing_df %>% 
+  group_by(BsmtFinType2) %>% 
+  summarise(mean_BsmtFinType2 = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtFinType2, y = mean_BsmtFinType2)) +
+  geom_col()
+
+# GLQ
+```
+
+```{r}
+# Heating
+housing_df %>% 
+  group_by(Heating) %>% 
+  summarise(mean_Heating = mean(SalePrice)) %>% 
+  ggplot(aes(x = Heating, y = mean_Heating)) +
+  geom_col()
+
+
+# Heating type - Gas forced warm air furnace and gas hot water or steam heat the highest
+# Check distribution
+```
 
 
 
+```{r}
+# HeatingQC
+housing_df %>% 
+  group_by(HeatingQC) %>% 
+  summarise(mean_HeatingQC = mean(SalePrice)) %>% 
+  ggplot(aes(x = HeatingQC, y = mean_HeatingQC)) +
+  geom_col()
+
+# Heating Quality and condition - Excellent has the highest average SalesPrice
+# This variable might be important
+```
 
 
+```{r}
+# CentralAir
+housing_df %>% 
+  group_by(CentralAir) %>% 
+  summarise(mean_CentralAir = mean(SalePrice)) %>% 
+  ggplot(aes(x = CentralAir, y = mean_CentralAir)) +
+  geom_col()
 
+```
+
+```{r}
+# Electrical
+housing_df %>% 
+  group_by(Electrical) %>% 
+  summarise(mean_Electrical = mean(SalePrice)) %>% 
+  ggplot(aes(x = Electrical, y = mean_Electrical)) +
+  geom_col()
+
+# Check model
+```
 
 ## Model Selection
 
@@ -202,7 +344,7 @@ Independent Variables: log(GrLivArea), log(LotArea), MasVnrArea2, log(TotalBsmtS
 housing.model6 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + PoolArea,  data = housing_df)
 summary(housing.model6)
 vif(housing.model6)
-plot(housing.model6)
+plot(housing.model6)4
 ```
 
 ```{r}
@@ -279,7 +421,7 @@ plot(housing.model9)
 ```
 
 ```{r}
-anova(housing.model12, housing.model11, test = 'Chisq')
+anova(housing.model9, housing.model8, test = 'Chisq')
 vif(housing.model12)
 # Multicolinearity - Remove 1stFlrSF and 2ndFlrSF
 ```
@@ -321,6 +463,7 @@ vif(housing.model16)
 ```{r}
 
 
+str(housing_df)
 ```
 
 
