@@ -175,6 +175,8 @@ housing_df %>%
 
 # Poured concrete
 ```
+<<<<<<< HEAD
+=======
 
 
 ```{r}
@@ -225,6 +227,109 @@ housing_df %>%
 
 
 
+>>>>>>> upstream/main
+
+```{r}
+# BsmtFinType2
+housing_df %>% 
+  group_by(BsmtFinType2) %>% 
+  summarise(mean_BsmtFinType2 = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtFinType2, y = mean_BsmtFinType2)) +
+  geom_col()
+
+# GLQ
+```
+
+```{r}
+<<<<<<< HEAD
+# BsmtQual
+housing_df %>% 
+  group_by(BsmtQual) %>% 
+  summarise(mean_BsmtQual = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtQual, y = mean_BsmtQual)) +
+=======
+# Heating
+housing_df %>% 
+  group_by(Heating) %>% 
+  summarise(mean_Heating = mean(SalePrice)) %>% 
+  ggplot(aes(x = Heating, y = mean_Heating)) +
+>>>>>>> upstream/main
+  geom_col()
+
+```
+
+# Heating type - Gas forced warm air furnace and gas hot water or steam heat the highest
+# Check distribution
+```
+
+```{r}
+# BsmtCond
+housing_df %>% 
+  group_by(BsmtCond) %>% 
+  summarise(mean_BsmtCond = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtCond, y = mean_BsmtCond)) +
+  geom_col()
+
+# Excellent and good
+```
+
+
+```{r}
+<<<<<<< HEAD
+# BsmtExposure
+housing_df %>% 
+  group_by(BsmtExposure) %>% 
+  summarise(mean_BsmtExposure = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtExposure, y = mean_BsmtExposure)) +
+  geom_col()
+
+# Good Exposure
+```
+
+
+```{r}
+# BsmtFinType1
+housing_df %>% 
+  group_by(BsmtFinType1) %>% 
+  summarise(mean_BsmtFinType1 = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtFinType1, y = mean_BsmtFinType1)) +
+  geom_col()
+
+# GLQ
+=======
+# HeatingQC
+housing_df %>% 
+  group_by(HeatingQC) %>% 
+  summarise(mean_HeatingQC = mean(SalePrice)) %>% 
+  ggplot(aes(x = HeatingQC, y = mean_HeatingQC)) +
+  geom_col()
+
+# Heating Quality and condition - Excellent has the highest average SalesPrice
+# This variable might be important
+>>>>>>> upstream/main
+```
+
+
+```{r}
+# CentralAir
+housing_df %>% 
+  group_by(CentralAir) %>% 
+  summarise(mean_CentralAir = mean(SalePrice)) %>% 
+  ggplot(aes(x = CentralAir, y = mean_CentralAir)) +
+  geom_col()
+
+```
+
+```{r}
+# Electrical
+housing_df %>% 
+  group_by(Electrical) %>% 
+  summarise(mean_Electrical = mean(SalePrice)) %>% 
+  ggplot(aes(x = Electrical, y = mean_Electrical)) +
+  geom_col()
+
+# Check model
+```
 
 ```{r}
 # BsmtFinType2
@@ -506,9 +611,12 @@ plot(housing.model9)
 
 ```{r}
 <<<<<<< HEAD
+<<<<<<< HEAD
 anova(housing.model8, housing.model9, test = 'Chisq')
 vif(housing.model9)
 =======
+=======
+>>>>>>> upstream/main
 anova(housing.model9, housing.model8, test = 'Chisq')
 vif(housing.model12)
 >>>>>>> upstream/main
