@@ -48,7 +48,7 @@ The Ames_Housing_Price_Data.csv set contains  81  data columns, including the ke
 The columns of the data are mostly attributes associated with the land and the houses. There are size related attributes, quality and condition attributes, house attachment attributes, etc.
 
 ```{r}
-housing = read.csv('Ames_HousePrice.csv', header = TRUE)
+housing = read.csv('data/Ames_Housing_Price_Data.csv', header = TRUE)
 ```
 
 ```{r}
@@ -175,6 +175,11 @@ housing_df %>%
 
 # Poured concrete
 ```
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> upstream/main
 
 
 ```{r}
@@ -186,6 +191,8 @@ housing_df %>%
   geom_col()
 
 ```
+<<<<<<< HEAD
+=======
 
 
 ```{r}
@@ -225,6 +232,7 @@ housing_df %>%
 
 
 
+>>>>>>> upstream/main
 
 ```{r}
 # BsmtFinType2
@@ -238,12 +246,288 @@ housing_df %>%
 ```
 
 ```{r}
+<<<<<<< HEAD
+# BsmtCond
+housing_df %>% 
+  group_by(BsmtCond) %>% 
+  summarise(mean_BsmtCond = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtCond, y = mean_BsmtCond)) +
+  geom_col()
+
+# Excellent and good
+```
+
+
+```{r}
+# BsmtExposure
+housing_df %>% 
+  group_by(BsmtExposure) %>% 
+  summarise(mean_BsmtExposure = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtExposure, y = mean_BsmtExposure)) +
+  geom_col()
+
+# Good Exposure
+=======
 # Heating
 housing_df %>% 
   group_by(Heating) %>% 
   summarise(mean_Heating = mean(SalePrice)) %>% 
   ggplot(aes(x = Heating, y = mean_Heating)) +
   geom_col()
+
+
+# Heating type - Gas forced warm air furnace and gas hot water or steam heat the highest
+# Check distribution
+>>>>>>> upstream/main
+```
+
+
+```{r}
+# BsmtFinType1
+housing_df %>% 
+  group_by(BsmtFinType1) %>% 
+  summarise(mean_BsmtFinType1 = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtFinType1, y = mean_BsmtFinType1)) +
+  geom_col()
+
+# GLQ
+```
+
+
+
+>>>>>>> upstream/main
+
+```{r}
+# BsmtFinType2
+housing_df %>% 
+  group_by(BsmtFinType2) %>% 
+  summarise(mean_BsmtFinType2 = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtFinType2, y = mean_BsmtFinType2)) +
+  geom_col()
+
+# GLQ
+```
+
+```{r}
+<<<<<<< HEAD
+<<<<<<< HEAD
+# BsmtQual
+housing_df %>% 
+  group_by(BsmtQual) %>% 
+  summarise(mean_BsmtQual = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtQual, y = mean_BsmtQual)) +
+=======
+# Heating
+housing_df %>% 
+  group_by(Heating) %>% 
+  summarise(mean_Heating = mean(SalePrice)) %>% 
+  ggplot(aes(x = Heating, y = mean_Heating)) +
+>>>>>>> upstream/main
+  geom_col()
+
+```
+
+# Heating type - Gas forced warm air furnace and gas hot water or steam heat the highest
+# Check distribution
+```
+
+```{r}
+# BsmtCond
+housing_df %>% 
+  group_by(BsmtCond) %>% 
+  summarise(mean_BsmtCond = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtCond, y = mean_BsmtCond)) +
+  geom_col()
+
+# Excellent and good
+```
+
+
+```{r}
+<<<<<<< HEAD
+# BsmtExposure
+housing_df %>% 
+  group_by(BsmtExposure) %>% 
+  summarise(mean_BsmtExposure = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtExposure, y = mean_BsmtExposure)) +
+  geom_col()
+
+# Good Exposure
+```
+
+
+```{r}
+# BsmtFinType1
+housing_df %>% 
+  group_by(BsmtFinType1) %>% 
+  summarise(mean_BsmtFinType1 = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtFinType1, y = mean_BsmtFinType1)) +
+  geom_col()
+
+# GLQ
+=======
+=======
+>>>>>>> upstream/main
+# HeatingQC
+housing_df %>% 
+  group_by(HeatingQC) %>% 
+  summarise(mean_HeatingQC = mean(SalePrice)) %>% 
+  ggplot(aes(x = HeatingQC, y = mean_HeatingQC)) +
+  geom_col()
+
+# Heating Quality and condition - Excellent has the highest average SalesPrice
+# This variable might be important
+<<<<<<< HEAD
+>>>>>>> upstream/main
+```
+
+
+```{r}
+# CentralAir
+housing_df %>% 
+  group_by(CentralAir) %>% 
+  summarise(mean_CentralAir = mean(SalePrice)) %>% 
+  ggplot(aes(x = CentralAir, y = mean_CentralAir)) +
+  geom_col()
+
+```
+
+```{r}
+# Electrical
+housing_df %>% 
+  group_by(Electrical) %>% 
+  summarise(mean_Electrical = mean(SalePrice)) %>% 
+  ggplot(aes(x = Electrical, y = mean_Electrical)) +
+  geom_col()
+
+# Check model
+```
+
+```{r}
+# BsmtFinType2
+housing_df %>% 
+  group_by(BsmtFinType2) %>% 
+  summarise(mean_BsmtFinType2 = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtFinType2, y = mean_BsmtFinType2)) +
+  geom_col()
+
+# GLQ
+```
+
+```{r}
+<<<<<<< HEAD
+ggplot(housing3) + geom_bar(aes(x=KitchenAbvGr,fill = KitchenQual),position = 'dodge')
+ggplot(housing3,aes(x = KitchenQual, y = SalePrice)) + geom_boxplot() + facet_grid(~ KitchenAbvGr) # sales price vs. kitchen qual and number of kitchen
+
+
+# ggplot(housing3,aes(y=SalePrice)) + geom_point(aes(x=OpenPorchSF, color = 'red'))+geom_point(aes(x=EnclosedPorch, color='blue'))+geom_point(aes(x=X3SsnPorch
+# , color = 'green'))+geom_point(aes(x=ScreenPorch, color = 'purple'))
+=======
+```
+
+
+```{r}
+# CentralAir
+housing_df %>% 
+  group_by(CentralAir) %>% 
+  summarise(mean_CentralAir = mean(SalePrice)) %>% 
+  ggplot(aes(x = CentralAir, y = mean_CentralAir)) +
+  geom_col()
+
+```
+>>>>>>> upstream/main
+
+```{r}
+# Electrical
+housing_df %>% 
+  group_by(Electrical) %>% 
+  summarise(mean_Electrical = mean(SalePrice)) %>% 
+  ggplot(aes(x = Electrical, y = mean_Electrical)) +
+  geom_col()
+
+# Check model
+```
+
+
+ggplot(housing3,aes(x = Functional, y = SalePrice)) + geom_boxplot() # sales price vs. functional
+
+ggplot(housing3,aes(x = MiscFeature, y = SalePrice)) + geom_boxplot()  # sales price vs. Miscellaneous feature
+
+ggplot(housing3,aes(x = Fence, y = SalePrice)) + geom_boxplot()    # sales price vs. fence
+
+ggplot(housing3, aes(x = FireplaceQu, y = SalePrice)) + geom_boxplot() + facet_grid(~ Fireplaces)  # sales price vs. fireplaces
+
+
+ggplot(housing3,aes(x=GarageYrBlt,y=SalePrice)) + geom_point(position = 'jitter', alpha = 0.3)    # sales price vs. Garage Year Built
+ggplot(housing3) + geom_boxplot(aes(x=GarageType,y=SalePrice,fill=GarageQual))
+ggplot(housing3, aes(x=GarageArea,y=SalePrice)) + geom_point(aes(color=GarageType)) + geom_smooth(method = 'lm',formula = y~x) # sales price vs. Garage Type
+ggplot(housing3, aes(x=GarageArea,y=SalePrice)) + geom_point(aes(color=GarageType,shape=GarageQual)) + geom_smooth(method = 'lm',formula = y~x) # + garage qual
+ggplot(housing3, aes(x=GarageArea,y=SalePrice)) + geom_point(aes(color=GarageType,shape=PavedDrive)) + geom_smooth(method = 'lm',formula = y~x)
+
+ggplot(housing3) + geom_bar(aes(x=TotRmsAbvGrd),position = 'dodge')
+ggplot(housing3,aes(x=TotRmsAbvGrd,y=SalePrice)) + geom_point() + geom_smooth(method = 'lm',formula = y~x) # Total Room Number vs. Price
+
+
+# Porch
+ggplot(housing3,aes(y=SalePrice)) + geom_point(aes(x=OpenPorchSF))
+ggplot(housing3,aes(y=SalePrice)) + geom_point(aes(x=EnclosedPorch))
+ggplot(housing3,aes(y=SalePrice)) + geom_point(aes(x=X3SsnPorch))
+ggplot(housing3,aes(y=SalePrice)) + geom_point(aes(x=ScreenPorch))
+
+
+housing3 %>% group_by(YrSold) %>% count(MoSold) %>% ggplot(aes(MoSold,n))+geom_line() + facet_grid(~ YrSold) # house sold for different year
+ggplot(housing3,aes(MoSold,SalePrice))+geom_point() + facet_grid(~ YrSold)
+
+```
+
+```{r}
+housing_garage.model = lm(log(SalePrice) ~ log(total_LivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual + num_bathroom + GarageQual + PavedDrive + GarageYrBlt, data = housing3)
+summary(housing_garage.model)
+
+```
+```{r}
+housing_garage.model2 = lm(SalePrice ~ GarageArea + GarageType + GarageQual + GarageCond + GarageCars + PavedDrive + GarageYrBlt, data = housing3)
+summary(housing_garage.model2)
+
+```
+```{r}
+housing_garage.model3 = lm(SalePrice ~ log(total_LivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + YearBuilt + YearRemodAdd + OverallQual + num_bathroom + GarageArea + GarageType + GarageQual + GarageCond + GarageCars + PavedDrive + GarageYrBlt, data = housing3)
+summary(housing_garage.model3)
+
+
+```
+
+
+
+
+
+
+
+```{r}
+housing_kitchen.model = lm(SalePrice ~ log(total_LivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual + num_bathroom + KitchenAbvGr + KitchenQual, data = housing3)
+summary(housing_kitchen.model)
+
+```
+
+```{r}
+housing_woodDeck.model = lm(log(SalePrice) ~ log(total_LivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual + num_bathroom + WoodDeckSF, data = housing3)
+summary(housing_woodDeck.model)
+
+
+```
+```{r}
+housing_porch.model = lm(log(SalePrice) ~ log(total_LivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual + num_bathroom + OpenPorchSF + EnclosedPorch + X3SsnPorch + ScreenPorch, data = housing3)
+summary(housing_porch.model)
+
+```
+=======
+# Heating
+housing_df %>% 
+  group_by(Heating) %>% 
+  summarise(mean_Heating = mean(SalePrice)) %>% 
+  ggplot(aes(x = Heating, y = mean_Heating)) +
+  geom_col()
+>>>>>>> upstream/main
 
 
 # Heating type - Gas forced warm air furnace and gas hot water or steam heat the highest
@@ -356,10 +640,11 @@ summary(pool.model)
 
 ```{r}
 # Check linear regression between SalePrice and YearBuilt, YearRemodAdd
-year.model = lm(SalePrice ~ YearBuilt + YearRemodAdd, data = housing4)
+year.model = lm(SalePrice ~ YearBuilt + YearRemodAdd, data = housing_df)
 summary(year.model)
 vif(year.model)
-summary(housing4)
+summary(year.model)
+plot(year.model)
 # Year Built and Year Remodeled are significant variables to add
 ```
 
@@ -421,8 +706,19 @@ plot(housing.model9)
 ```
 
 ```{r}
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+anova(housing.model8, housing.model9, test = 'Chisq')
+vif(housing.model9)
+=======
+=======
+>>>>>>> upstream/main
+=======
+>>>>>>> upstream/main
 anova(housing.model9, housing.model8, test = 'Chisq')
 vif(housing.model12)
+>>>>>>> upstream/main
 # Multicolinearity - Remove 1stFlrSF and 2ndFlrSF
 ```
 
@@ -447,7 +743,7 @@ vif(housing.model14)
 2. Model with Number of bathrooms (just the bathrooms, including the Basement & Full Bath & HalfBath) 
 ```{r}
 # Total_LivArea
-housing.model15 = lm(log(SalePrice) ~ log(total_LivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual, data = housing7)
+housing.model15 = lm(log(SalePrice) ~ log(total_LivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual, data = housing_df)
 summary(housing.model15)
 vif(housing.model15)
 
