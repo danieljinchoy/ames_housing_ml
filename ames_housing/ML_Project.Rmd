@@ -246,7 +246,6 @@ housing_df %>%
 ```
 
 ```{r}
-<<<<<<< HEAD
 # BsmtCond
 housing_df %>% 
   group_by(BsmtCond) %>% 
@@ -267,19 +266,21 @@ housing_df %>%
   geom_col()
 
 # Good Exposure
-=======
+```
+
+```{r}
 # Heating
 housing_df %>% 
   group_by(Heating) %>% 
   summarise(mean_Heating = mean(SalePrice)) %>% 
   ggplot(aes(x = Heating, y = mean_Heating)) +
   geom_col()
-
+```
 
 # Heating type - Gas forced warm air furnace and gas hot water or steam heat the highest
 # Check distribution
 >>>>>>> upstream/main
-```
+
 
 
 ```{r}
@@ -309,29 +310,30 @@ housing_df %>%
 ```
 
 ```{r}
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 # BsmtQual
 housing_df %>% 
   group_by(BsmtQual) %>% 
   summarise(mean_BsmtQual = mean(SalePrice)) %>% 
   ggplot(aes(x = BsmtQual, y = mean_BsmtQual)) +
-=======
+```
+
+```{r}
 # Heating
 housing_df %>% 
   group_by(Heating) %>% 
   summarise(mean_Heating = mean(SalePrice)) %>% 
   ggplot(aes(x = Heating, y = mean_Heating)) +
->>>>>>> upstream/main
   geom_col()
 
 ```
 
 # Heating type - Gas forced warm air furnace and gas hot water or steam heat the highest
 # Check distribution
-```
+
 
 ```{r}
+
 # BsmtCond
 housing_df %>% 
   group_by(BsmtCond) %>% 
@@ -344,7 +346,6 @@ housing_df %>%
 
 
 ```{r}
-<<<<<<< HEAD
 # BsmtExposure
 housing_df %>% 
   group_by(BsmtExposure) %>% 
@@ -365,9 +366,6 @@ housing_df %>%
   geom_col()
 
 # GLQ
-=======
-=======
->>>>>>> upstream/main
 # HeatingQC
 housing_df %>% 
   group_by(HeatingQC) %>% 
@@ -377,13 +375,12 @@ housing_df %>%
 
 # Heating Quality and condition - Excellent has the highest average SalesPrice
 # This variable might be important
-<<<<<<< HEAD
->>>>>>> upstream/main
 ```
 
 
 ```{r}
 # CentralAir
+library(tidyverse)
 housing_df %>% 
   group_by(CentralAir) %>% 
   summarise(mean_CentralAir = mean(SalePrice)) %>% 
