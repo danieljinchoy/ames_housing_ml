@@ -2011,49 +2011,26 @@ housing2 = housing1 %&gt;%
 <h4>Mutate Columns</h4>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShjYXIpXG5cbiMgQ3JlYXRlIG5ldyBjb2x1bW5zIGZvciBiZXR0ZXIgbW9kZWxpbmcgXG5ob3VzaW5nMyA9IGhvdXNpbmcyICU+JSBcbiAgZmlsdGVyKGlzLm5hKE1hc1ZuckFyZWEpICE9IDEpICU+JSBcbiAgbXV0YXRlKFxuICAgIFxuICAgIE1hc1ZuckFyZWEyID0gY2FzZV93aGVuKFxuICAgICAgTWFzVm5yQXJlYSA9PSAwIH4gMCxcbiAgICAgIE1hc1ZuckFyZWEgIT0gMCB+IDEpLFxuICAgIFxuICAgIEdhcmFnZUFyZWEyID0gaWZlbHNlKGlzLm5hKEdhcmFnZUFyZWEpLCAwLCBHYXJhZ2VBcmVhKSxcbiAgICBcbiAgICBQb29sQXJlYTIgPSBpZmVsc2UoaXMubmEoUG9vbEFyZWEpLCAwLCBQb29sQXJlYSksXG4gICAgXG4gICAgUG9vbEFyZWEzID0gaWZlbHNlKGlzLm5hKFBvb2xBcmVhKSwgMCwgMSksXG4gICAgXG4gICAgWDJuZEZsclNGID0gaWZlbHNlKGlzLm5hKFgybmRGbHJTRiksIDAsIFgybmRGbHJTRiksXG4gICAgXG4gICAgSGFsZkJhdGgyID0gY2FzZV93aGVuKFxuICAgICAgSGFsZkJhdGggPT0gMSB+IDAuNSxcbiAgICAgIEhhbGZCYXRoID09IDAgfiAwKSxcbiAgICBcbiAgICBCc210SGFsZkJhdGgyID0gY2FzZV93aGVuKFxuICAgICAgQnNtdEhhbGZCYXRoID09IDEgfiAwLjUsXG4gICAgICBCc210SGFsZkJhdGggPT0gMCB+IDApLFxuICAgICMgSWYgQmFzZW1lbnQgRmluaXNoIFR5cGUxIGlzIEdMUSBvciBBTFEsIHdlIHVzZSB0aGUgQmFzZW1lbnQgRmluaXNoIFNxdWFyZSBGZWV0MVxuICAgIEJhc210RmluU0YxID0gaWZlbHNlKEJzbXRGaW5UeXBlMSA9PSAnR0xRJyB8IEJzbXRGaW5UeXBlMSA9PSAnQUxRJywgQnNtdEZpblNGMSwgMCksXG4gICAgIyBJZiBCYXNlbWVudCBGaW5pc2ggVHlwZTIgaXMgR0xRIG9yIEFMUSwgd2UgdXNlIHRoZSBCYXNlbWVudCBGaW5pc2ggU3F1YXJlIEZlZXQyXG4gICAgQmFzbXRGaW5TRjIgPSBpZmVsc2UoQnNtdEZpblR5cGUyID09ICdHTFEnIHwgQnNtdEZpblR5cGUyID09J0FMUScsIEJzbXRGaW5TRjIsIDApLFxuICAgICMgVGhlIFRvdGFsIFNxdWFyZSBGZWV0IG9mIEJhc2VtZW50IEZpbmlzaCBpcyBCYXNtdEZpblNGMSArIEJhc210RmluU0YyXG4gICAgQmFzbXRGaW5TRiA9IEJhc210RmluU0YxICsgQmFzbXRGaW5TRjIsXG4gICAgIyBUb3RhbCBMaXZpbmcgQXJlYSBpcyBHckxpdkFyZWEgKyBCYXNtdEZpblNGXG4gICAgdG90YWxfTGl2QXJlYSA9IEdyTGl2QXJlYSArIEJhc210RmluU0YsXG4gICAgbnVtX2JhdGhyb29tID0gQnNtdEhhbGZCYXRoMiArIEhhbGZCYXRoMiArIEZ1bGxCYXRoICsgQnNtdEZ1bGxCYXRoXG4gIClcblxuIyBGaW5hbCBEYXRhIHNldCBhZnRlciBjbGVhbmluZ1xuXG5ob3VzaW5nX2RmID0gaG91c2luZzNcblxuXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShjYXIpXG5cbmBgYCJ9 -->
 <pre class="r"><code>library(car)
-
-# Create new columns for better modeling 
-housing3 = housing2 %&gt;% 
-  filter(is.na(MasVnrArea) != 1) %&gt;% 
-  mutate(
-    
-    MasVnrArea2 = case_when(
-      MasVnrArea == 0 ~ 0,
-      MasVnrArea != 0 ~ 1),
-    
-    GarageArea2 = ifelse(is.na(GarageArea), 0, GarageArea),
-    
-    PoolArea2 = ifelse(is.na(PoolArea), 0, PoolArea),
-    
-    PoolArea3 = ifelse(is.na(PoolArea), 0, 1),
-    
-    X2ndFlrSF = ifelse(is.na(X2ndFlrSF), 0, X2ndFlrSF),
-    
-    HalfBath2 = case_when(
-      HalfBath == 1 ~ 0.5,
-      HalfBath == 0 ~ 0),
-    
-    BsmtHalfBath2 = case_when(
-      BsmtHalfBath == 1 ~ 0.5,
-      BsmtHalfBath == 0 ~ 0),
-    # If Basement Finish Type1 is GLQ or ALQ, we use the Basement Finish Square Feet1
-    BasmtFinSF1 = ifelse(BsmtFinType1 == &#39;GLQ&#39; | BsmtFinType1 == &#39;ALQ&#39;, BsmtFinSF1, 0),
-    # If Basement Finish Type2 is GLQ or ALQ, we use the Basement Finish Square Feet2
-    BasmtFinSF2 = ifelse(BsmtFinType2 == &#39;GLQ&#39; | BsmtFinType2 ==&#39;ALQ&#39;, BsmtFinSF2, 0),
-    # The Total Square Feet of Basement Finish is BasmtFinSF1 + BasmtFinSF2
-    BasmtFinSF = BasmtFinSF1 + BasmtFinSF2,
-    # Total Living Area is GrLivArea + BasmtFinSF
-    total_LivArea = GrLivArea + BasmtFinSF,
-    num_bathroom = BsmtHalfBath2 + HalfBath2 + FullBath + BsmtFullBath
-  )
-
-# Final Data set after cleaning
-
-housing_df = housing3
 </code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBjYXJEYXRhXG5SZWdpc3RlcmVkIFMzIG1ldGhvZCBvdmVyd3JpdHRlbiBieSAnZGF0YS50YWJsZSc6XG4gIG1ldGhvZCAgICAgICAgICAgZnJvbVxuICBwcmludC5kYXRhLnRhYmxlICAgICBcblxuQXR0YWNoaW5nIHBhY2thZ2U6IOKAmGNhcuKAmVxuXG5UaGUgZm9sbG93aW5nIG9iamVjdCBpcyBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOmRwbHly4oCZOlxuXG4gICAgcmVjb2RlXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0IGlzIG1hc2tlZCBmcm9tIOKAmHBhY2thZ2U6cHVycnLigJk6XG5cbiAgICBzb21lXG4ifQ== -->
+<pre><code>Loading required package: carData
+Registered S3 method overwritten by &#39;data.table&#39;:
+  method           from
+  print.data.table     
+
+Attaching package: ‘car’
+
+The following object is masked from ‘package:dplyr’:
+
+    recode
+
+The following object is masked from ‘package:purrr’:
+
+    some</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>

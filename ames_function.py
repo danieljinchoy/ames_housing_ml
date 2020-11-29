@@ -76,5 +76,60 @@ def dist_from_coordinates(lat1, lon1, lat2, lon2):
   return haversine
 
 
+def neighborhood_mutate (row):
+   if row['Neighborhood'] == 'Blmngtn':
+      return 'Gilbert'
+   if row['Neighborhood'] == 'Blueste':
+      return 'Lincoln Way / State Ave'
+   if row['Neighborhood'] == 'BrDale':
+      return 'Grand Ave / 30th St'
+   if row['Neighborhood'] == 'BrkSide':
+      return 'E 13th St / Duff Ave'
+   if row['Neighborhood'] == 'ClearCr':
+      return 'Ontario'
+   if row['Neighborhood'] == 'CollgCr':
+      return 'Lincoln Way / 500th Ave'
+   if row['Neighborhood'] == 'Crawfor':
+      return 'S Duff Ave / E Lincoln Way'
+   if row['Neighborhood'] == 'Edwards':
+      return 'Woodland St / West St'
+   if row['Neighborhood'] == 'Gilbert':
+      return 'Gilbert'
+   if row['Neighborhood'] == 'IDOTRR' :
+      return 'S Duff Ave / E Lincoln Way'
+   if row['Neighborhood'] == 'MeadowV':
+      return 'S Duff Ave / Airport Rd'
+   if row['Neighborhood'] == 'Mitchel':
+      return 'S Duff Ave / Airport Rd'
+   if row['Neighborhood'] == 'NAmes':
+      return 'City Center'
+   if row['Neighborhood'] == 'NoRidge':
+      return 'Gilbert'
+   if row['Neighborhood'] == 'NPkVill':
+      return 'Grand Ave / 30th St'
+   if row['Neighborhood'] == 'NridgHt':
+      return 'Gilbert'
+   if row['Neighborhood'] == 'NWAmes':
+      return '24th St / Grand Ave'
+   if row['Neighborhood'] == 'OldTown':
+      return 'E 13th St / Duff Ave'
+   if row['Neighborhood'] == 'SWISU':
+      return 'Lincoln Way / State Ave'
+   if row['Neighborhood'] == 'Sawyer':
+      return 'Ontario'
+   if row['Neighborhood'] == 'SawyerW':
+      return 'Ontario'
+   if row['Neighborhood'] == 'Somerst' :
+      return 'Grand Ave / 30th St'
+   if row['Neighborhood'] == 'StoneBr':
+      return 'Grand Ave / 30th St'
+   if row['Neighborhood'] == 'Timber':
+      return 'S Duff Ave / Airport Rd'
+   if row['Neighborhood'] == 'Veenker':
+      return 'Stange Rd / Pammel Ct'
+   if row['Neighborhood'] == 'Greens':
+      return 'Stange Rd / Pammel Ct'
+
+
 
 
