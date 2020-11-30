@@ -130,6 +130,58 @@ def neighborhood_mutate (row):
    if row['Neighborhood'] == 'Greens':
       return 'Stange Rd / Pammel Ct'
 
+def feature_eng(df):
+    # calculate age of building
+    df['BldgAge'] = df['YrSold'] - df['YearBuilt']
 
+    # binarize YearRemodAdd
+    df['Remodeled'] = np.where(df['YearRemodAdd'] == df['YearBuilt'], 0, 1)
+
+    # binarize MSSubClass to PUD or not PUD
+    df['IsPUD'] = np.where(df['MSSubClass'].isin(['120','150','160','180']), 1, 0)
+    
+    # binarize LotShape to Reg/not Reg
+    df['LotIsReg'] = np.where(df['LotShape']=='Reg', 1, 0)
+    
+    # binarize LandContour to HLS and Low vs not HLS or Low
+    df['HillORDepr'] = np.where(df['LandContour'].isin(['HLS','Low']), 1, 0)
+    
+    # binarize Condition1/2 to positive feature or no positive feature
+    df['PosFeat'] = np.where(df['Condition1'].isin(['PosN','PosA'])|df['Condition2'].isin(['PosN','PosA']), 1, 0)
+
+    # combine exterior material 1/2 to one column
+    df['ExtMatl'] = np.where((df['Exterior1st']==df['Exterior2nd']),df['Exterior1st'], 'Mixed')
+    
+    # covnert Electrical to circuit breakers/
+    #df['SBrkrElecOnly']=np.where(df['Electrical']=='SBrkr',1,0)
+    
+    # simply qual/cond features
+    for col in ['ExterQual','BsmtQual','KitchenQual','FireplaceQu','GarageQual','ExterCond',\
+                'BsmtCond','GarageCond','HeatingQC']:
+        df[col+'_num'] = df[col].replace(['Ex','Gd','TA','Fa','Po','None'],[10,8,6,4,2,0])
+
+    # sum up porch area
+    df['Total_porch_sf'] = df['OpenPorchSF'] + df['3SsnPorch'] + df['EnclosedPorch'] +\
+                                df['ScreenPorch'] + df['WoodDeckSF']
+    
+    # binarize fences
+    df['HasFence'] = np.where(df['Fence']=='None', 0, 1)
+
+    # simplify Functional to 3 classes
+    df['Funct_3'] = df['Functional'].replace(['Maj1', 'Maj2', 'Min1', 'Min2', 'Mod', 'Sal', 'Typ'],\
+                                             ['ModToSev','ModToSev','Minor','Minor','ModToSev','ModToSev','Normal'])
+    
+    # binarize sale condition to normal sale condition or not sale condition
+    #df['NormalSaleCond'] = np.where(df['SaleCondition']=='Normal', 1, 0)
+    
+    # drop the original columns or unused columns
+    df = df.drop(['MSSubClass','YearBuilt','YearRemodAdd','LotFrontage','LotArea','LotConfig','LandSlope',\
+                  'Condition1','Condition2','Exterior1st','Exterior2nd','LotShape','LandContour',\
+                  'OpenPorchSF','3SsnPorch','EnclosedPorch','ScreenPorch','WoodDeckSF',\
+                  'Fence','Functional','ExterQual','BsmtQual','KitchenQual','FireplaceQu',\
+                  'GarageQual','ExterCond','BsmtCond','GarageCond','HeatingQC',\
+                  'GarageCars','RoofMatl','RoofStyle','KitchenAbvGr','MSZoning'],\
+                 axis = 1)
+    return df
 
 
