@@ -1,11 +1,8 @@
 # Ames Housing Machine Learning Project
-** by Yi Cao, Ling Ge Zeng, and Daniel Choy
 
 ### Introduction
 
-House flipping is a common real estate investment strategy by purchasing a property and selling it in the hopes of making a profit. This can mean that sometimes, flipping a house means the temporary owner has to make a lot of repairs or renovations until the owner can sell it for more than the investment cost. Hence, the goal is to buy low and sell high. 
-
-However, house flipping can sometimes be financially risky due to the uncertainty of the market and 
+House flipping is a common real estate investment strategy by purchasing a property and selling it in the hopes of making a profit. This can mean that sometimes, flipping a house means the temporary owner has to make a lot of repairs or renovations until the owner can sell it for more than the investment cost. Hence, the goal is to buy low and sell high. However, house flipping can sometimes be financially risky due to the uncertainty of the market and 
 
 In this collaborative project, our objective is to: 
 1. explore Ames Housing Market in the context of house flipping market;
