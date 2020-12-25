@@ -1,0 +1,39 @@
+---
+title: "model"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+ames_df = read.csv('../data/final_df.csv', header = TRUE)
+```
+
+
+
+```{r}
+Daniel.model = lm(log(SalePrice) ~ MasVnrArea2 + ExterQual + ExterCond + Foundation +  BsmtQual + BsmtCond + BsmtExposure + BasmtFinSF + BsmtUnfSF + TotalBsmtSF + Heating + HeatingQC + CentralAir + Electrical + X1stFlrSF + X2ndFlrSF + LowQualFinSF + FullBath + BedroomAbvGr + KitchenAbvGr + num_bathroom + TotRmsAbvGrd + Functional, data = ames_df)
+summary(Daniel.model)
+```
+
+
+```{r}
+
+Daniel.model2 = lm(log(SalePrice) ~  ExterQual + ExterCond + Foundation + BasmtFinSF + BsmtUnfSF + TotalBsmtSF + Heating + HeatingQC + CentralAir + X1stFlrSF + X2ndFlrSF + LowQualFinSF + BedroomAbvGr + KitchenAbvGr + num_bathroom + TotRmsAbvGrd + Functional, data = ames_df)
+summary(Daniel.model2)
+```
+
+
+
+```{r}
+
+vif(Daniel.model2)
+```

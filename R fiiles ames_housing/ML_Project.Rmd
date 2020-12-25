@@ -1,0 +1,779 @@
+---
+title: "ML Project"
+subtitle: "Complementary Code"
+author: "Daniel Choy, Yi Cao, Danny Zeng"
+date: "Nov 10, 2020"
+output:
+  html_notebook:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+Machine Learning Project - Ames Housing Data
+
+Ames, Iowa is the college town of **Iowa State University**. The Ames housing dataset consists of about $2500$ house sale records between $2006-2010$. Detailed information about the house attributes, along with the sale prices, is recorded in the dataset. The goal of the project is to:
+- perform descriptive data analysis to gain business (i.e. housing market) insights
+- build descriptive machine learning models to understand the local housing market.
+- build predictive machine learning models for the local house price prediction.
+
+
+### Who We Are
+
+Choose (but are not limited to) one of the following options:
+- You are a housing market consultant.
+- You are a data scientist for an online real estate database company which provides house price estimation (like **Zillow** home price estimates) for the site visitors.
+
+The goal is to build a highly accurate predictive or descriptive model. To accomplish this, it is important to understand the local housing market in a **data driven** way. 
+
+### Import Libraries
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(lubridate)
+library(tidyverse)
+```
+
+### Load Data
+
+There are two data sets included in the data folder: Ames_Housing_Price_Data.csv and Ames_Real_Estate_Data.csv.
+
+The Ames_Housing_Price_Data.csv set contains  81  data columns, including the key feature SalePrice which will be used as the target of the predictive/descriptive modeling. PID refers to the land parcel ID, which can merged on the MapRefNo column of the Ames Accessor Data (Ames_Real_Estate_Data.csv) to find the property address. Using a free service, such as geopy, we can find the long-lat coordinates of the houses.
+
+The columns of the data are mostly attributes associated with the land and the houses. There are size related attributes, quality and condition attributes, house attachment attributes, etc.
+
+```{r}
+housing = read.csv('data/Ames_Housing_Price_Data.csv', header = TRUE)
+```
+
+```{r}
+real_estate = read.csv('data/Ames_Real_Estate_Data.csv')
+```
+
+## Data Pre-Processing
+
+### Data Inspection
+```{r}
+str(housing)
+```
+
+### Data Cleaning
+
+#### NA values - Dealing with Missing Data
+```{r}
+library(tidyverse)
+# Remove NA values in MasVnrArea
+housing1 = housing %>% 
+  filter(is.na(MasVnrArea) != 1)
+```
+
+```{r}
+# Remove NA values in TotalBsmtSF
+housing2 = housing1 %>% 
+  filter(is.na(TotalBsmtSF) != 1)
+```
+
+```{r}
+housing2 %>%filter(is.na(MasVnrArea) != 1)
+```
+
+#### Mutate Columns
+```{r}
+library(car)
+
+# Create new columns for better modeling 
+housing3 = housing2 %>% 
+  filter(is.na(MasVnrArea) != 1) %>% 
+  mutate(
+    
+    MasVnrArea2 = case_when(
+      MasVnrArea == 0 ~ 0,
+      MasVnrArea != 0 ~ 1),
+    
+    GarageArea2 = ifelse(is.na(GarageArea), 0, GarageArea),
+    
+    PoolArea2 = ifelse(is.na(PoolArea), 0, PoolArea),
+    
+    PoolArea3 = ifelse(is.na(PoolArea), 0, 1),
+    
+    X2ndFlrSF = ifelse(is.na(X2ndFlrSF), 0, X2ndFlrSF),
+    
+    HalfBath2 = case_when(
+      HalfBath == 1 ~ 0.5,
+      HalfBath == 0 ~ 0),
+    
+    BsmtHalfBath2 = case_when(
+      BsmtHalfBath == 1 ~ 0.5,
+      BsmtHalfBath == 0 ~ 0),
+    # If Basement Finish Type1 is GLQ or ALQ, we use the Basement Finish Square Feet1
+    BasmtFinSF1 = ifelse(BsmtFinType1 == 'GLQ' | BsmtFinType1 == 'ALQ', BsmtFinSF1, 0),
+    # If Basement Finish Type2 is GLQ or ALQ, we use the Basement Finish Square Feet2
+    BasmtFinSF2 = ifelse(BsmtFinType2 == 'GLQ' | BsmtFinType2 =='ALQ', BsmtFinSF2, 0),
+    # The Total Square Feet of Basement Finish is BasmtFinSF1 + BasmtFinSF2
+    BasmtFinSF = BasmtFinSF1 + BasmtFinSF2,
+    # Total Living Area is GrLivArea + BasmtFinSF
+    total_LivArea = GrLivArea + BasmtFinSF,
+    num_bathroom = BsmtHalfBath2 + HalfBath2 + FullBath + BsmtFullBath
+  )
+
+# Final Data set after cleaning
+
+housing_df = housing3
+
+
+```
+
+
+
+
+### Data Type
+
+
+
+## Exploratory Data Analysis
+
+```{r}
+# MasVnrType
+housing_df %>% 
+  group_by(MasVnrType) %>% 
+  summarise(mean_MasVnrType = mean(SalePrice)) %>% 
+  ggplot(aes(x = MasVnrType, y = mean_MasVnrType)) +
+  geom_col()
+
+# Stone
+```
+```{r}
+# ExterCond
+housing_df %>% 
+  group_by(ExterCond) %>% 
+  summarise(mean_ExterCond = mean(SalePrice)) %>% 
+  ggplot(aes(x = ExterCond, y = mean_ExterCond)) +
+  geom_col()
+```
+```{r}
+# ExterQual
+housing_df %>% 
+  group_by(ExterQual) %>% 
+  summarise(mean_ExterQual = mean(SalePrice)) %>% 
+  ggplot(aes(x = ExterQual, y = mean_ExterQual)) +
+  geom_col()
+
+# Excellent
+```
+```{r}
+# Foundation
+housing_df %>% 
+  group_by(Foundation) %>% 
+  summarise(mean_Foundation = mean(SalePrice)) %>% 
+  ggplot(aes(x = Foundation, y = mean_Foundation)) +
+  geom_col()
+
+# Poured concrete
+```
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> upstream/main
+
+
+```{r}
+# BsmtQual
+housing_df %>% 
+  group_by(BsmtQual) %>% 
+  summarise(mean_BsmtQual = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtQual, y = mean_BsmtQual)) +
+  geom_col()
+
+```
+<<<<<<< HEAD
+=======
+
+
+```{r}
+# BsmtCond
+housing_df %>% 
+  group_by(BsmtCond) %>% 
+  summarise(mean_BsmtCond = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtCond, y = mean_BsmtCond)) +
+  geom_col()
+
+# Excellent and good
+```
+
+
+```{r}
+# BsmtExposure
+housing_df %>% 
+  group_by(BsmtExposure) %>% 
+  summarise(mean_BsmtExposure = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtExposure, y = mean_BsmtExposure)) +
+  geom_col()
+
+# Good Exposure
+```
+
+
+```{r}
+# BsmtFinType1
+housing_df %>% 
+  group_by(BsmtFinType1) %>% 
+  summarise(mean_BsmtFinType1 = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtFinType1, y = mean_BsmtFinType1)) +
+  geom_col()
+
+# GLQ
+```
+
+
+
+>>>>>>> upstream/main
+
+```{r}
+# BsmtFinType2
+housing_df %>% 
+  group_by(BsmtFinType2) %>% 
+  summarise(mean_BsmtFinType2 = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtFinType2, y = mean_BsmtFinType2)) +
+  geom_col()
+
+# GLQ
+```
+
+```{r}
+# BsmtCond
+housing_df %>% 
+  group_by(BsmtCond) %>% 
+  summarise(mean_BsmtCond = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtCond, y = mean_BsmtCond)) +
+  geom_col()
+
+# Excellent and good
+```
+
+
+```{r}
+# BsmtExposure
+housing_df %>% 
+  group_by(BsmtExposure) %>% 
+  summarise(mean_BsmtExposure = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtExposure, y = mean_BsmtExposure)) +
+  geom_col()
+
+# Good Exposure
+```
+
+```{r}
+# Heating
+housing_df %>% 
+  group_by(Heating) %>% 
+  summarise(mean_Heating = mean(SalePrice)) %>% 
+  ggplot(aes(x = Heating, y = mean_Heating)) +
+  geom_col()
+```
+
+# Heating type - Gas forced warm air furnace and gas hot water or steam heat the highest
+# Check distribution
+>>>>>>> upstream/main
+
+
+
+```{r}
+# BsmtFinType1
+housing_df %>% 
+  group_by(BsmtFinType1) %>% 
+  summarise(mean_BsmtFinType1 = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtFinType1, y = mean_BsmtFinType1)) +
+  geom_col()
+
+# GLQ
+```
+
+
+
+>>>>>>> upstream/main
+
+```{r}
+# BsmtFinType2
+housing_df %>% 
+  group_by(BsmtFinType2) %>% 
+  summarise(mean_BsmtFinType2 = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtFinType2, y = mean_BsmtFinType2)) +
+  geom_col()
+
+# GLQ
+```
+
+```{r}
+
+# BsmtQual
+housing_df %>% 
+  group_by(BsmtQual) %>% 
+  summarise(mean_BsmtQual = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtQual, y = mean_BsmtQual)) +
+```
+
+```{r}
+# Heating
+housing_df %>% 
+  group_by(Heating) %>% 
+  summarise(mean_Heating = mean(SalePrice)) %>% 
+  ggplot(aes(x = Heating, y = mean_Heating)) +
+  geom_col()
+
+```
+
+# Heating type - Gas forced warm air furnace and gas hot water or steam heat the highest
+# Check distribution
+
+
+```{r}
+
+# BsmtCond
+housing_df %>% 
+  group_by(BsmtCond) %>% 
+  summarise(mean_BsmtCond = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtCond, y = mean_BsmtCond)) +
+  geom_col()
+
+# Excellent and good
+```
+
+
+```{r}
+# BsmtExposure
+housing_df %>% 
+  group_by(BsmtExposure) %>% 
+  summarise(mean_BsmtExposure = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtExposure, y = mean_BsmtExposure)) +
+  geom_col()
+
+# Good Exposure
+```
+
+
+```{r}
+# BsmtFinType1
+housing_df %>% 
+  group_by(BsmtFinType1) %>% 
+  summarise(mean_BsmtFinType1 = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtFinType1, y = mean_BsmtFinType1)) +
+  geom_col()
+
+# GLQ
+# HeatingQC
+housing_df %>% 
+  group_by(HeatingQC) %>% 
+  summarise(mean_HeatingQC = mean(SalePrice)) %>% 
+  ggplot(aes(x = HeatingQC, y = mean_HeatingQC)) +
+  geom_col()
+
+# Heating Quality and condition - Excellent has the highest average SalesPrice
+# This variable might be important
+```
+
+
+```{r}
+# CentralAir
+library(tidyverse)
+housing_df %>% 
+  group_by(CentralAir) %>% 
+  summarise(mean_CentralAir = mean(SalePrice)) %>% 
+  ggplot(aes(x = CentralAir, y = mean_CentralAir)) +
+  geom_col()
+
+```
+
+```{r}
+# Electrical
+housing_df %>% 
+  group_by(Electrical) %>% 
+  summarise(mean_Electrical = mean(SalePrice)) %>% 
+  ggplot(aes(x = Electrical, y = mean_Electrical)) +
+  geom_col()
+
+# Check model
+```
+
+```{r}
+# BsmtFinType2
+housing_df %>% 
+  group_by(BsmtFinType2) %>% 
+  summarise(mean_BsmtFinType2 = mean(SalePrice)) %>% 
+  ggplot(aes(x = BsmtFinType2, y = mean_BsmtFinType2)) +
+  geom_col()
+
+# GLQ
+```
+
+```{r}
+<<<<<<< HEAD
+ggplot(housing3) + geom_bar(aes(x=KitchenAbvGr,fill = KitchenQual),position = 'dodge')
+ggplot(housing3,aes(x = KitchenQual, y = SalePrice)) + geom_boxplot() + facet_grid(~ KitchenAbvGr) # sales price vs. kitchen qual and number of kitchen
+
+
+# ggplot(housing3,aes(y=SalePrice)) + geom_point(aes(x=OpenPorchSF, color = 'red'))+geom_point(aes(x=EnclosedPorch, color='blue'))+geom_point(aes(x=X3SsnPorch
+# , color = 'green'))+geom_point(aes(x=ScreenPorch, color = 'purple'))
+=======
+```
+
+
+```{r}
+# CentralAir
+housing_df %>% 
+  group_by(CentralAir) %>% 
+  summarise(mean_CentralAir = mean(SalePrice)) %>% 
+  ggplot(aes(x = CentralAir, y = mean_CentralAir)) +
+  geom_col()
+
+```
+>>>>>>> upstream/main
+
+```{r}
+# Electrical
+housing_df %>% 
+  group_by(Electrical) %>% 
+  summarise(mean_Electrical = mean(SalePrice)) %>% 
+  ggplot(aes(x = Electrical, y = mean_Electrical)) +
+  geom_col()
+
+# Check model
+```
+
+
+ggplot(housing3,aes(x = Functional, y = SalePrice)) + geom_boxplot() # sales price vs. functional
+
+ggplot(housing3,aes(x = MiscFeature, y = SalePrice)) + geom_boxplot()  # sales price vs. Miscellaneous feature
+
+ggplot(housing3,aes(x = Fence, y = SalePrice)) + geom_boxplot()    # sales price vs. fence
+
+ggplot(housing3, aes(x = FireplaceQu, y = SalePrice)) + geom_boxplot() + facet_grid(~ Fireplaces)  # sales price vs. fireplaces
+
+
+ggplot(housing3,aes(x=GarageYrBlt,y=SalePrice)) + geom_point(position = 'jitter', alpha = 0.3)    # sales price vs. Garage Year Built
+ggplot(housing3) + geom_boxplot(aes(x=GarageType,y=SalePrice,fill=GarageQual))
+ggplot(housing3, aes(x=GarageArea,y=SalePrice)) + geom_point(aes(color=GarageType)) + geom_smooth(method = 'lm',formula = y~x) # sales price vs. Garage Type
+ggplot(housing3, aes(x=GarageArea,y=SalePrice)) + geom_point(aes(color=GarageType,shape=GarageQual)) + geom_smooth(method = 'lm',formula = y~x) # + garage qual
+ggplot(housing3, aes(x=GarageArea,y=SalePrice)) + geom_point(aes(color=GarageType,shape=PavedDrive)) + geom_smooth(method = 'lm',formula = y~x)
+
+ggplot(housing3) + geom_bar(aes(x=TotRmsAbvGrd),position = 'dodge')
+ggplot(housing3,aes(x=TotRmsAbvGrd,y=SalePrice)) + geom_point() + geom_smooth(method = 'lm',formula = y~x) # Total Room Number vs. Price
+
+
+# Porch
+ggplot(housing3,aes(y=SalePrice)) + geom_point(aes(x=OpenPorchSF))
+ggplot(housing3,aes(y=SalePrice)) + geom_point(aes(x=EnclosedPorch))
+ggplot(housing3,aes(y=SalePrice)) + geom_point(aes(x=X3SsnPorch))
+ggplot(housing3,aes(y=SalePrice)) + geom_point(aes(x=ScreenPorch))
+
+
+housing3 %>% group_by(YrSold) %>% count(MoSold) %>% ggplot(aes(MoSold,n))+geom_line() + facet_grid(~ YrSold) # house sold for different year
+ggplot(housing3,aes(MoSold,SalePrice))+geom_point() + facet_grid(~ YrSold)
+
+```
+
+```{r}
+housing_garage.model = lm(log(SalePrice) ~ log(total_LivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual + num_bathroom + GarageQual + PavedDrive + GarageYrBlt, data = housing3)
+summary(housing_garage.model)
+
+```
+```{r}
+housing_garage.model2 = lm(SalePrice ~ GarageArea + GarageType + GarageQual + GarageCond + GarageCars + PavedDrive + GarageYrBlt, data = housing3)
+summary(housing_garage.model2)
+
+```
+```{r}
+housing_garage.model3 = lm(SalePrice ~ log(total_LivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + YearBuilt + YearRemodAdd + OverallQual + num_bathroom + GarageArea + GarageType + GarageQual + GarageCond + GarageCars + PavedDrive + GarageYrBlt, data = housing3)
+summary(housing_garage.model3)
+
+
+```
+
+
+
+
+
+
+
+```{r}
+housing_kitchen.model = lm(SalePrice ~ log(total_LivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual + num_bathroom + KitchenAbvGr + KitchenQual, data = housing3)
+summary(housing_kitchen.model)
+
+```
+
+```{r}
+housing_woodDeck.model = lm(log(SalePrice) ~ log(total_LivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual + num_bathroom + WoodDeckSF, data = housing3)
+summary(housing_woodDeck.model)
+
+
+```
+```{r}
+housing_porch.model = lm(log(SalePrice) ~ log(total_LivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual + num_bathroom + OpenPorchSF + EnclosedPorch + X3SsnPorch + ScreenPorch, data = housing3)
+summary(housing_porch.model)
+
+```
+=======
+# Heating
+housing_df %>% 
+  group_by(Heating) %>% 
+  summarise(mean_Heating = mean(SalePrice)) %>% 
+  ggplot(aes(x = Heating, y = mean_Heating)) +
+  geom_col()
+>>>>>>> upstream/main
+
+
+# Heating type - Gas forced warm air furnace and gas hot water or steam heat the highest
+# Check distribution
+```
+
+
+
+```{r}
+# HeatingQC
+housing_df %>% 
+  group_by(HeatingQC) %>% 
+  summarise(mean_HeatingQC = mean(SalePrice)) %>% 
+  ggplot(aes(x = HeatingQC, y = mean_HeatingQC)) +
+  geom_col()
+
+# Heating Quality and condition - Excellent has the highest average SalesPrice
+# This variable might be important
+```
+
+
+```{r}
+# CentralAir
+housing_df %>% 
+  group_by(CentralAir) %>% 
+  summarise(mean_CentralAir = mean(SalePrice)) %>% 
+  ggplot(aes(x = CentralAir, y = mean_CentralAir)) +
+  geom_col()
+
+```
+
+```{r}
+# Electrical
+housing_df %>% 
+  group_by(Electrical) %>% 
+  summarise(mean_Electrical = mean(SalePrice)) %>% 
+  ggplot(aes(x = Electrical, y = mean_Electrical)) +
+  geom_col()
+
+# Check model
+```
+
+## Model Selection
+
+
+### Model 1: Base Model
+```{r}
+# Basic model - starting line
+housing.model = lm(log(SalePrice) ~ log(GrLivArea) + LotArea + MasVnrArea, data = housing_df)
+summary(housing.model)
+plot(housing.model)
+```
+
+### Model 2
+Independent Variables: log(GrLivArea), log(LotArea), MasVnrArea2
+```{r}
+housing.model2 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2, data = housing_df)
+summary(housing.model2)
+plot(housing.model2)
+vif(housing.model2)
+```
+
+
+### Model 3
+Independent Variables: log(GrLivArea), log(LotArea), MasVnrArea2, log(TotalBsmtSF + 1)
+```{r}
+housing.model3 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1), data = housing_df)
+summary(housing.model3)
+plot(housing.model3)
+vif(housing.model3)
+```
+
+
+### Model 4
+Independent Variables: log(GrLivArea), log(LotArea), MasVnrArea2, log(TotalBsmtSF + 1), log(GarageArea2 + 1)
+```{r}
+housing.model4 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1),  data = housing_df)
+summary(housing.model4)
+vif(housing.model4)
+plot(housing.model4)
+```
+
+
+
+### Model 5
+Independent Variables: log(GrLivArea), log(LotArea), MasVnrArea2, log(TotalBsmtSF + 1), log(GarageArea2 + 1), log(PoolArea + 1)
+```{r}
+housing.model5 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + log(PoolArea + 1),  data = housing_df)
+summary(housing.model5)
+vif(housing.model5)
+plot(housing.model5)
+```
+
+
+### Model 6
+Independent Variables: log(GrLivArea), log(LotArea), MasVnrArea2, log(TotalBsmtSF + 1), log(GarageArea2 + 1), PoolArea
+```{r}
+housing.model6 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + PoolArea,  data = housing_df)
+summary(housing.model6)
+vif(housing.model6)
+plot(housing.model6)4
+```
+
+```{r}
+# Check linear regression between SalePrice and PoolArea
+pool.model = lm(SalePrice ~ PoolArea, data = housing)
+summary(pool.model)
+# Get rid of PoolArea
+```
+
+```{r}
+# Check linear regression between SalePrice and YearBuilt, YearRemodAdd
+year.model = lm(SalePrice ~ YearBuilt + YearRemodAdd, data = housing_df)
+summary(year.model)
+vif(year.model)
+summary(year.model)
+plot(year.model)
+# Year Built and Year Remodeled are significant variables to add
+```
+
+
+### Model 7
+Independent Variables: log(GrLivArea), log(LotArea), MasVnrArea2, log(TotalBsmtSF + 1), log(GarageArea2 + 1), YearBuilt, YearRemodAdd
+```{r}
+housing.model7 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd,  data = housing_df)
+
+summary(housing.model7)
+plot(housing.model7)
+```
+
+```{r}
+anova(housing.model7, housing.model6, test = 'Chisq')
+```
+We reject the null hypothesis and conclude that adding more features in the model should provide a better fit. In other words, the full model is better than the reduced model.
+
+
+### *Checking Models
+```{r}
+# Check linear regression between SalePrice and MoSold, YrSold
+sold.model = lm(SalePrice ~ MoSold + YrSold, data = housing_df)
+summary(sold.model)
+plot(sold.model)
+# Month and Year sold - irrelevant
+```
+
+```{r}
+# Check linear regression between SalePrice and OverallQual, OverallCond
+quality.model = lm(SalePrice ~ OverallQual + OverallCond, housing_df)
+summary(quality.model)
+plot(quality.model)
+```
+
+
+
+### Model 8
+Independent Variables: log(GrLivArea), log(LotArea), MasVnrArea2, log(TotalBsmtSF + 1), log(GarageArea2 + 1), YearBuilt, YearRemodAdd, OverallQual, OverallCond
+```{r}
+housing.model8 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual + OverallCond,  data = housing_df)
+summary(housing.model8)
+plot(housing.model8)
+```
+
+```{r}
+anova(housing.model8, housing.model7, test = 'Chisq')
+# Multiple R-Squared too lage?
+```
+
+
+
+### Model 9
+Independent Variables: log(GrLivArea), log(LotArea), MasVnrArea2, log(TotalBsmtSF + 1), log(GarageArea2 + 1), YearBuilt, YearRemodAdd, OverallQual, OverallCond, og(X1stFlrSF), log(X2ndFlrSF + 1)
+```{r}
+housing.model9 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual + log(X1stFlrSF) + log(X2ndFlrSF + 1),  data = housing_df)
+summary(housing.model9)
+plot(housing.model9)
+```
+
+```{r}
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+anova(housing.model8, housing.model9, test = 'Chisq')
+vif(housing.model9)
+=======
+=======
+>>>>>>> upstream/main
+=======
+>>>>>>> upstream/main
+anova(housing.model9, housing.model8, test = 'Chisq')
+vif(housing.model12)
+>>>>>>> upstream/main
+# Multicolinearity - Remove 1stFlrSF and 2ndFlrSF
+```
+
+
+### Model 10 - 11
+
+1. Model with Total Number of Rooms (Including the Basement) 
+```{r}
+# Model with GrLivArea
+housing.model10 = lm(log(SalePrice) ~ log(GrLivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual, data = housing_df)
+summary(housing.model10)
+vif(housing.model10)
+
+# Model with total_room
+housing.model11 = lm(log(SalePrice) ~ log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual + total_room, data = housing_df)
+summary(housing.model14)
+vif(housing.model14)
+
+# Note: total_room initially had a big p-value. Possibly a mulitcolinearity issue with log(GrLivArea). When we took out log(GrLivArea), we get a small p-value for total_room
+```
+
+2. Model with Number of bathrooms (just the bathrooms, including the Basement & Full Bath & HalfBath) 
+```{r}
+# Total_LivArea
+housing.model15 = lm(log(SalePrice) ~ log(total_LivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual, data = housing_df)
+summary(housing.model15)
+vif(housing.model15)
+
+housing.model16 = lm(log(SalePrice) ~ log(total_LivArea) + log(LotArea) + MasVnrArea2 + log(TotalBsmtSF + 1) + log(GarageArea2 + 1) + YearBuilt + YearRemodAdd + OverallQual + num_bathroom, data = housing7)
+summary(housing.model16)
+vif(housing.model16)
+# Overfitting - dont include number of bathroom
+
+
+```
+
+3. Model with Number of bedrooms
+```{r}
+
+
+str(housing_df)
+```
+
+
+
+
+
+
+## Descriptive Modeling
+
+
+
+
+## Predictive Modeling
+
+
+
+
+
+
+
