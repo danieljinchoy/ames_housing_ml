@@ -11,6 +11,8 @@ The data contains 2558 observations and 190 features on homes sold in Ames, Iowa
 
 ### Understsanding Ames, Iowa
 
+![iowa-state-university-logo](https://user-images.githubusercontent.com/29543481/103159147-c40ec900-4793-11eb-868f-094e36cef61e.png)
+
 Ames, Iowa economy and demographics is largely definied by the Iowa State University, a public research university located in the middle of the city. More than half of Ames population is either studying or working at Iowa State University, which makes Ames one large extended campus. Just like many college towns, Ames real estate market is defined by a very large proportion of rental properties, which explains the stability of the housing market in Ames (please note the EDA Jupyter Notebook for more information). 
 
 ### Objective
