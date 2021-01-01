@@ -9,7 +9,7 @@ House flipping is a common real estate investment strategy by purchasing a prope
 
 ### About the Data
 
-The data contains 2558 observations and 190 features on homes sold in Ames, Iowa from 2006 to 2010. Within the features, we carefully selected a subset of these features and engineered some of our own features to simplify and sharpen the focus of our subsequent models. We also ran random forest and lasso regression to further select our features, before finalizing our features into our leanr and tree-based machine learning models. 
+The data contains 2558 observations and 190 features on homes sold in Ames, Iowa from 2006 to 2010. Within the features, we carefully selected a subset of these features and engineered some of our own features to simplify and sharpen the focus of our subsequent models. We also ran random forest and lasso regression to further select our features, before finalizing our features into our learn and tree-based machine learning models. 
 
 
 
