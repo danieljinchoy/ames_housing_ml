@@ -13,7 +13,7 @@ The data contains 2558 observations and 190 features on homes sold in Ames, Iowa
 
 
 
-### Understsanding Ames, Iowa
+### Understanding Ames, Iowa
 
 ![iowa-state-university-logo](https://user-images.githubusercontent.com/29543481/103159147-c40ec900-4793-11eb-868f-094e36cef61e.png)
 
